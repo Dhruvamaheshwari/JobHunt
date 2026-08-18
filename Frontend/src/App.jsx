@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import JobCard from './components/JobCard';
+import MagicBento from './components/MagicBento';
 import { Input } from './components/ui/input';
 import { Select } from './components/ui/select';
 import { Button } from './components/ui/button';
@@ -200,16 +201,24 @@ function App() {
                     </div>
                 )}
 
-                {/* Jobs Grid & Pagination */}
+                {/* Jobs Grid powered by React Bits MagicBento & Pagination */}
                 {!loading && !error && jobs.length > 0 && (
                     <>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                            {jobs.map((job) => (
-                                <JobCard key={job._id || job.externalId} job={job} />
-                            ))}
-                        </div>
+                        <MagicBento
+                            jobs={jobs}
+                            textAutoHide={false}
+                            enableStars={true}
+                            enableSpotlight={true}
+                            enableBorderGlow={true}
+                            enableTilt={true}
+                            enableMagnetism={true}
+                            clickEffect={true}
+                            spotlightRadius={300}
+                            particleCount={12}
+                            glowColor="132, 0, 255"
+                        />
 
-                        {/* Pagination UI using shadcn Button */}
+                        {/* Pagination UI */}
                         <div className="flex items-center justify-between border-t border-slate-200 dark:border-slate-800 pt-4">
                             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                                 Page <span className="font-bold text-slate-800 dark:text-slate-200">{page}</span> of{' '}
@@ -221,7 +230,7 @@ function App() {
                                     size="sm"
                                     disabled={page <= 1}
                                     onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                                    className="gap-1 text-xs dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800"
+                                    className="gap-1 text-xs"
                                 >
                                     <ChevronLeft className="w-4 h-4" /> Previous
                                 </Button>
@@ -230,7 +239,7 @@ function App() {
                                     size="sm"
                                     disabled={page >= totalPages}
                                     onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-                                    className="gap-1 text-xs dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800"
+                                    className="gap-1 text-xs"
                                 >
                                     Next <ChevronRight className="w-4 h-4" />
                                 </Button>
