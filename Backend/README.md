@@ -14,6 +14,8 @@ Backend/
 │   └── jobController.js     # Controller handling job endpoints logic
 ├── middleware/
 │   └── errorMiddleware.js   # 404 & centralized error handling middleware
+├── services/
+│   └── jobFetcher.js        # Public job API fetcher & duplicate prevention logic
 ├── model/
 │   └── Job.js               # Mongoose schema for Job listings
 ├── routers/
@@ -29,7 +31,7 @@ Backend/
 ## 🛠️ Prerequisites & Setup
 
 ### 1. Requirements
-- **Node.js** (v16+)
+- **Node.js** (v18+)
 - **MongoDB** (Local or MongoDB Atlas instance)
 
 ### 2. Installation
@@ -71,13 +73,14 @@ The server will start at `http://localhost:4000`.
 
 ## 📡 API Endpoints
 
-| Method | Endpoint    | Description                     |
-| ------ | ----------- | ------------------------------- |
-| GET    | `/`         | Health check endpoint           |
-| GET    | `/api/jobs` | Retrieve all ingested job posts |
+| Method | Endpoint           | Description                                                 |
+| ------ | ------------------ | ----------------------------------------------------------- |
+| GET    | `/`                | Health check endpoint                                       |
+| GET    | `/api/jobs`        | Retrieve all stored job posts from MongoDB                  |
+| POST   | `/api/jobs/ingest` | Manually trigger fetching jobs from public API (Remotive)   |
 
 ---
 
 ## 🛡️ Error Handling
 - Includes custom 404 middleware for unhandled endpoints.
-- Centralized global error handling middleware returning clean JSON error responses.
+- Global error response format across controllers.

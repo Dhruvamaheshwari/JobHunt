@@ -32,8 +32,13 @@ const jobSchema = new mongoose.Schema(
         },
         source: {
             type: String,
-            default: 'RSS / Public API',
+            default: 'Remotive API',
             trim: true,
+        },
+        externalId: {
+            type: String,
+            unique: true,
+            sparse: true,
         },
         postedAt: {
             type: Date,

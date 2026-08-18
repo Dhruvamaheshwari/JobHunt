@@ -1,4 +1,5 @@
 const Job = require('../model/Job');
+const { fetchAndSaveJobs } = require('../services/jobFetcher');
 
 const getJobs = async (req, res) => {
     try {
@@ -11,7 +12,24 @@ const getJobs = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: 'Server Error: Unable to fetch jobs',
+            message: 'Failed to fetch jobs',
+            error: error.message,
+        });
+    }
+};
+
+const ingestJobs = async (req, res) => {
+    try {
+        const data = await fetchAndSaveJobs();
+        res.status(200).json({
+            success: true,
+            message: 'Jobs ingested successfully',
+            data,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Job ingestion failed',
             error: error.message,
         });
     }
@@ -19,4 +37,5 @@ const getJobs = async (req, res) => {
 
 module.exports = {
     getJobs,
+    ingestJobs,
 };
