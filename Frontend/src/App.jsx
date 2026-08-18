@@ -7,7 +7,7 @@ import { Button } from './components/ui/button';
 import { Skeleton } from './components/ui/skeleton';
 import { Search, MapPin, Filter, RotateCcw, ChevronLeft, ChevronRight, Inbox, AlertTriangle } from 'lucide-react';
 
-const API_BASE_URL = 'http://localhost:4000/api/jobs';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000/api/jobs';
 
 function App() {
     const [jobs, setJobs] = useState([]);
