@@ -35,12 +35,38 @@ const fetchAndSaveJobs = async () => {
                     location: job.candidate_required_location || 'Remote',
                     description: job.description || '',
                     category: job.category || 'General',
+                    jobType: job.job_type ? job.job_type.replace('_', ' ') : 'Full-time',
+                    salary: job.salary || '',
+                    tags: Array.isArray(job.tags) ? job.tags : [],
+                    companyLogo: job.company_logo || job.company_logo_url || '',
                     url: job.url || '',
                     source: 'Remotive API',
                     externalId: jobId,
                     postedAt: job.publication_date ? new Date(job.publication_date) : new Date(),
                 });
                 addedCount++;
+            } else {
+                // Optionally update missing extra fields for existing jobs
+                let updated = false;
+                if (!exists.jobType && job.job_type) {
+                    exists.jobType = job.job_type.replace('_', ' ');
+                    updated = true;
+                }
+                if (!exists.salary && job.salary) {
+                    exists.salary = job.salary;
+                    updated = true;
+                }
+                if ((!exists.tags || exists.tags.length === 0) && Array.isArray(job.tags)) {
+                    exists.tags = job.tags;
+                    updated = true;
+                }
+                if (!exists.companyLogo && (job.company_logo || job.company_logo_url)) {
+                    exists.companyLogo = job.company_logo || job.company_logo_url;
+                    updated = true;
+                }
+                if (updated) {
+                    await exists.save();
+                }
             }
         } catch (dbErr) {
             console.log(`Failed to save job ${jobId}`);
@@ -56,4 +82,3 @@ const fetchAndSaveJobs = async () => {
 module.exports = {
     fetchAndSaveJobs,
 };
-

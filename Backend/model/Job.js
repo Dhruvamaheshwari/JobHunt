@@ -26,6 +26,25 @@ const jobSchema = new mongoose.Schema(
             trim: true,
             default: 'General',
         },
+        jobType: {
+            type: String,
+            trim: true,
+            default: 'Full-time',
+        },
+        salary: {
+            type: String,
+            trim: true,
+            default: '',
+        },
+        tags: {
+            type: [String],
+            default: [],
+        },
+        companyLogo: {
+            type: String,
+            trim: true,
+            default: '',
+        },
         url: {
             type: String,
             trim: true,
