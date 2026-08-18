@@ -3,12 +3,27 @@ const { fetchAndSaveJobs } = require('../services/jobFetcher');
 
 const getJobs = async (req, res) => {
     try {
+        const { search, location, source } = req.query;
+
+        // Build dynamic query filter object
+        const filter = {};
+
+        if (search) {
+            filter.title = { $regex: search, $options: 'i' };
+        }
+        if (location) {
+            filter.location = { $regex: location, $options: 'i' };
+        }
+        if (source) {
+            filter.source = { $regex: source, $options: 'i' };
+        }
+
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
 
-        const total = await Job.countDocuments();
-        const jobs = await Job.find()
+        const total = await Job.countDocuments(filter);
+        const jobs = await Job.find(filter)
             .sort({ postedAt: -1 })
             .skip(skip)
             .limit(limit);
