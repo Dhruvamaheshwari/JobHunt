@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-const { fetchAndSaveJobs } = require('./services/jobFetcher');
+const { fetchAndSaveJobs } = require('./jobFetcher');
 
 const initScheduler = () => {
     // Run ingestion every 1 hour ('0 * * * *')
