@@ -1,122 +1,105 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { useState, useEffect } from 'react';
+import Header from './components/Header';
+import JobCard from './components/JobCard';
+
+const API_BASE_URL = 'http://localhost:4000/api/jobs';
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [jobs, setJobs] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    const fetchJobs = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const res = await fetch(API_BASE_URL);
+            if (!res.ok) {
+                throw new Error(`Server error: ${res.status}`);
+            }
+            const data = await res.json();
+            if (data.success) {
+                setJobs(data.data || []);
+            } else {
+                throw new Error(data.message || 'Failed to fetch jobs');
+            }
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-      <div className="ticks"></div>
+    useEffect(() => {
+        fetchJobs();
+    }, []);
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+    return (
+        <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
+            <Header />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+            <main className="max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
+                <div className="flex items-center justify-between mb-6">
+                    <div>
+                        <h1 className="text-2xl font-bold text-slate-800">Job Listings</h1>
+                        <p className="text-sm text-slate-500">Explore latest fetched opportunities</p>
+                    </div>
+                    <button
+                        onClick={fetchJobs}
+                        className="text-sm font-medium bg-slate-200 hover:bg-slate-300 text-slate-700 px-3 py-1.5 rounded transition-colors"
+                    >
+                        Refresh 🔄
+                    </button>
+                </div>
+
+                {/* Loading State */}
+                {loading && (
+                    <div className="flex flex-col items-center justify-center py-16 text-slate-500">
+                        <div className="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-3"></div>
+                        <p className="text-sm">Loading jobs from server...</p>
+                    </div>
+                )}
+
+                {/* Error State */}
+                {!loading && error && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center max-w-md mx-auto my-8">
+                        <p className="text-red-600 font-semibold mb-2">Failed to load jobs</p>
+                        <p className="text-sm text-red-500 mb-4">{error}</p>
+                        <button
+                            onClick={fetchJobs}
+                            className="bg-red-600 hover:bg-red-700 text-white text-xs font-semibold px-4 py-2 rounded transition-colors"
+                        >
+                            Try Again
+                        </button>
+                    </div>
+                )}
+
+                {/* Empty State */}
+                {!loading && !error && jobs.length === 0 && (
+                    <div className="bg-white border border-slate-200 rounded-lg p-12 text-center max-w-md mx-auto my-8">
+                        <p className="text-4xl mb-3">📭</p>
+                        <h3 className="text-lg font-bold text-slate-700 mb-1">No Jobs Found</h3>
+                        <p className="text-sm text-slate-500">
+                            There are currently no job listings available in the database.
+                        </p>
+                    </div>
+                )}
+
+                {/* Jobs Grid */}
+                {!loading && !error && jobs.length > 0 && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {jobs.map((job) => (
+                            <JobCard key={job._id || job.externalId} job={job} />
+                        ))}
+                    </div>
+                )}
+            </main>
+
+            <footer className="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+                JobHunt © 2026 - Simple & Clean Ingestion System
+            </footer>
+        </div>
+    );
 }
 
-export default App
+export default App;
