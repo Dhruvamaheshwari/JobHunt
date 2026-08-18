@@ -76,7 +76,7 @@ The server will start at `http://localhost:4000`.
 | Method | Endpoint           | Description                                                 |
 | ------ | ------------------ | ----------------------------------------------------------- |
 | GET    | `/`                | Health check endpoint                                       |
-| GET    | `/api/jobs`        | Retrieve all stored job posts from MongoDB                  |
+| GET    | `/api/jobs?page=1&limit=10` | Retrieve paginated job posts from MongoDB |
 | POST   | `/api/jobs/ingest` | Manually trigger fetching jobs from public API (Remotive)   |
 
 ---
