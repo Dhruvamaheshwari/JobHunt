@@ -4,11 +4,15 @@ const cors = require('cors');
 const connectDB = require('./config/db.connect');
 const jobRoutes = require('./routers/jobRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
+const { initScheduler } = require('./services/jobScheduler');
 
 const app = express();
 
 // Connect to MongoDB
 connectDB();
+
+// Initialize automated ingestion scheduler
+initScheduler();
 
 // Middleware
 app.use(cors());

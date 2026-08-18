@@ -14,7 +14,7 @@ const fetchWithRetry = async (url) => {
 };
 
 const fetchAndSaveJobs = async () => {
-    const data = await fetchWithRetry('https://remotive.com/api/remote-jobs?limit=10');
+    const data = await fetchWithRetry('https://remotive.com/api/remote-jobs?limit=20');
     const jobs = data.jobs || [];
 
     let addedCount = 0;
